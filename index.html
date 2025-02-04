@@ -12,6 +12,9 @@
 </head>
 <body>
 <div id="app">
+    <div class="cart">
+        <p>Корзина: {{ cart }}</p>
+    </div>
     <div class="product">
         <div class="product-image">
             <img :alt="altText" :src="image"/>
@@ -28,7 +31,9 @@
                 <li v-for="detail in details">{{ detail }}</li>
             </ul>
             <div v-for="variant in variants" :key="variant.variantId">
-                <p>{{ variant.variantColor }}</p>
+                <p @mouseover="updateProduct(variant.variantImage)">
+                    {{ variant.variantColor }}
+                </p>
             </div>
             <div class="product-sizes">
                 <div class="size" v-for="size in sizes">{{ size }}</div>
@@ -38,6 +43,8 @@
                 <p v-else-if="inventory <= 10 && inventory > 0">Почти распродано!</p>
                 <p v-else>Товара нет на складе</p>
             </div>
+            <button v-on:click="addToCart">Добавить в корзину</button>
+            <button v-on:click="deleteFromCart">Удалить из карзины</button>
         </div>
     </div>
     <div class="moreProducts">
