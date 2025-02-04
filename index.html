@@ -19,6 +19,14 @@
         <div class="product-info">
             <h1>{{ product }}</h1>
             <p>{{ description }}</p>
+            <p v-if="inStock">(Товар есть на складе)</p>
+            <p v-else>(Товара нет на складе)</p>
+            <span v-if="onSale">Товар со скидкой</span>
+            <div class="rendering">
+                <p v-if="inventory > 10">Товар есть на складе</p>
+                <p v-else-if="inventory <= 10 && inventory > 0">Почти распродано!</p>
+                <p v-else>Товара нет на складе</p>
+            </div>
         </div>
     </div>
     <div class="moreProducts">
