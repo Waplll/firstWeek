@@ -17,11 +17,22 @@
             <img :alt="altText" :src="image"/>
         </div>
         <div class="product-info">
-            <h1>{{ product }}</h1>
+            <div class="product-title">
+                <h1>{{ product }}</h1>
+                <span v-if="onSale">Товар со скидкой</span>
+            </div>
             <p>{{ description }}</p>
             <p v-if="inStock">(Товар есть на складе)</p>
             <p v-else>(Товара нет на складе)</p>
-            <span v-if="onSale">Товар со скидкой</span>
+            <ul>
+                <li v-for="detail in details">{{ detail }}</li>
+            </ul>
+            <div v-for="variant in variants" :key="variant.variantId">
+                <p>{{ variant.variantColor }}</p>
+            </div>
+            <div class="product-sizes">
+                <div class="size" v-for="size in sizes">{{ size }}</div>
+            </div>
             <div class="rendering">
                 <p v-if="inventory > 10">Товар есть на складе</p>
                 <p v-else-if="inventory <= 10 && inventory > 0">Почти распродано!</p>
