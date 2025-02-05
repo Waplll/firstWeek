@@ -7,7 +7,7 @@ let app = new Vue({
     data: {
         product: "Носки",
         description: "Пара теплых, пушистых носков.",
-        image: "./img/vmSocks-green-onWhite.jpg",
+        image: "./img/Green-Socks.jpg",
         altText: "Пара носков",
         link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
         inStock: true,
@@ -18,12 +18,12 @@ let app = new Vue({
             {
                 variantsId: 2234,
                 variantColor: 'green',
-                variantImage: "./img/Blue-Socks.jpg"
+                variantImage: "./img/Green-Socks.jpg"
             },
             {
                 variantsId: 2235,
                 variantColor: 'blue',
-                variantImage: "./img/Green-Socks.jpg"
+                variantImage: "./img/Blue-Socks.jpg"
             }
         ],
         sizes: ['S','M','L','XL','XXL','XXXL'],
