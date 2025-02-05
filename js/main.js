@@ -43,6 +43,20 @@ Vue.component('product', {
                 <a :href="link">Больше подобных товаров</a>
             </div>
         </div>
+        <div class="Review-Block">
+            <div class="review-div">
+                <h2>Отзывы:</h2>
+                <ul>
+                    <p v-if="!reviews.length">Здесь ещё нет отзывов.</p>
+                    <li v-for="review in reviews">
+                        <p>{{ review.name }}</p>
+                        <p>Оценка: {{ review.rating }}</p>
+                        <p>{{ review.review }}</p>
+                    </li>
+                </ul>
+            </div>
+            <product-review @review-submitted="addReview"></product-review>
+        </div>
     </div>
     `,
     props: {
@@ -76,7 +90,8 @@ Vue.component('product', {
                 }
             ],
             sizes: ['S','M','L','XL','XXL','XXXL'],
-            cart: []
+            cart: [],
+            reviews: []
         }
     },
     methods: {
@@ -89,6 +104,9 @@ Vue.component('product', {
         },
         deleteFromCart() {
             this.$emit('delete-from-cart', this.variants[this.selectedVariant].variantsId);
+        },
+        addReview(productReview) {
+            this.reviews.push(productReview)
         }
     },
     computed: {
@@ -139,11 +157,51 @@ Vue.component('product-details', {
 })
 Vue.component('product-review', {
     template: `
-    <input>
+    <form class="review-form" @submit.prevent="onSubmit">
+             <p>
+               <label for="name">Имя:</label>
+               <input id="name" v-model="name" placeholder="Петя">
+             </p>
+            
+             <p>
+               <label for="review">Отзыв:</label>
+               <textarea id="review" v-model="review"></textarea>
+             </p>
+            
+             <p>
+               <label for="rating">Оценка:</label>
+               <select id="rating" v-model.number="rating">
+                 <option>5</option>
+                 <option>4</option>
+                 <option>3</option>
+                 <option>2</option>
+                 <option>1</option>
+               </select>
+             </p>
+            
+             <p>
+               <input type="submit" value="Отправить"> 
+             </p>
+        </form>
     `,
     data() {
         return {
-            name: null
+            name: null,
+            review: null,
+            rating: null
+        }
+    },
+    methods: {
+        onSubmit() {
+            let productReview = {
+                name: this.name,
+                review: this.review,
+                rating: this.rating
+            }
+            this.$emit('review-submitted', productReview)
+            this.name = null;
+            this.review = null;
+            this.rating = null;
         }
     }
 })
