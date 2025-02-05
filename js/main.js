@@ -17,13 +17,13 @@ let app = new Vue({
         variants: [
             {
                 variantsId: 2234,
-                variantColor: 'зелёные',
-                variantImage: "./img/vmSocks-green-onWhite.jpg"
+                variantColor: 'green',
+                variantImage: "./img/Blue-Socks.jpg"
             },
             {
                 variantsId: 2235,
-                variantColor: 'синие',
-                variantImage: "./img/vmSocks-blue-onWhite.jpg"
+                variantColor: 'blue',
+                variantImage: "./img/Green-Socks.jpg"
             }
         ],
         sizes: ['S','M','L','XL','XXL','XXXL'],
