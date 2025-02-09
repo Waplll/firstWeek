@@ -217,8 +217,7 @@ Vue.component('product-review', {
         }
     }
 })
-
-Vue.component ('product-tabs', {
+Vue.component('product-tabs', {
     props: {
         reviews: {
             type: Array,
@@ -242,6 +241,18 @@ Vue.component ('product-tabs', {
                 @click="selectedTab = tab"
                 >{{ tab }}</span>
         </ul>
+        
+        <!-- Новая кнопка для вызова модального окна -->
+        <button v-show="selectedTab === 'Отзывы'" @click="showModal = true">Оставить отзыв</button>
+
+        <!-- Модальное окно -->
+        <div v-if="showModal" class="modal-overlay">
+            <div class="modal-content">
+                <span class="close-modal" @click="showModal = false">&times;</span>
+                <product-review @review-submitted="onReviewSubmitted"></product-review>
+            </div>
+        </div>
+
         <div class="review-div" v-show="selectedTab === 'Отзывы'">
             <ul>
                 <p v-if="!reviews.length" class="noneReviews">Здесь ещё нет отзывов.</p>
@@ -249,14 +260,12 @@ Vue.component ('product-tabs', {
                     <p>{{ review.name }}</p>
                     <p>Оценка: {{ review.rating }}</p>
                     <p>Комментарий: {{ review.review }}</p>
-                    <P>Рекомендовано: {{ review.question }}</p>
+                    <p>Рекомендовано: {{ review.question }}</p>
                 </li>
             </ul>
         </div>
-        <div v-show="selectedTab === 'Оставить отзыв'">
-            <product-review></product-review>
-        </div>
-        <div v-show="selectedTab === 'Дотсавка'">
+
+        <div v-show="selectedTab === 'Доставка'">
             <p>Доставка: {{ shipping }}</p>
         </div>
         <div class="detail" v-show="selectedTab === 'Характеристики'">
@@ -267,16 +276,99 @@ Vue.component ('product-tabs', {
     `,
     data() {
         return {
-            tabs: ['Отзывы','Оставить отзыв','Дотсавка', 'Характеристики'],
-            selectedTab: 'Отзывы'
+            tabs: ['Отзывы','Доставка', 'Характеристики'],
+            selectedTab: 'Отзывы',
+            showModal: false // Новое свойство для отслеживания состояния модального окна
         }
     },
     methods: {
-        addReview(productReview) {
-            this.reviews.push(productReview)
+        onReviewSubmitted(productReview) {
+            this.$emit('review-submitted', productReview);
+            this.showModal = false; // Закрываем модальное окно после отправки отзыва
         }
     }
 })
+
+// В компоненте product-review добавляем событие для закрытия модального окна
+Vue.component('product-review', {
+    template: `
+    <form class="review-form" @submit.prevent="onSubmit">
+          <p v-if="errors.length">
+            <b>Пожалуйста, исправьте следующие ошибки:</b>
+            <ul>
+                <li v-for="error in errors">{{ error }}</li>
+            </ul>
+        </p>
+        <p>
+            <label for="name">Имя:</label>
+            <input id="name" v-model="name" placeholder="Петя">
+        </p>
+    
+        <p>
+            <label for="review">Отзыв:</label>
+            <textarea id="review" v-model="review"></textarea>
+        </p>
+    
+        <p>
+            <label for="rating">Оценка:</label>
+            <select id="rating" v-model.number="rating">
+                <option>5</option>
+                <option>4</option>
+                <option>3</option>
+                <option>2</option>
+                <option>1</option>
+            </select>
+        </p>
+        <p>Вы бы порекомендовали этот продукт?</p>
+        <div class="recomendate">
+            <div>
+                <input type="radio" id="yes" name="contact" value="Да" v-model="question"/>
+                <label for="yes">Да</label>
+            </div>
+            <div>
+                <input type="radio" id="no" name="contact" value="Нет" v-model="question"/>
+                <label for="no">Нет</label>
+            </div>
+        </div>
+        <p>
+            <input type="submit" value="Отправить"> 
+        </p>
+    </form>   
+    `,
+    data() {
+        return {
+            name: null,
+            review: null,
+            rating: null,
+            question: null,
+            errors: []
+        }
+    },
+    methods: {
+        onSubmit() {
+            if(this.name && this.review && this.rating && this.question) {
+                let productReview = {
+                    name: this.name,
+                    review: this.review,
+                    rating: this.rating,
+                    question: this.question
+                };
+                this.$emit('review-submitted', productReview); // Отправляем событие наверх
+                this.name = null;
+                this.review = null;
+                this.rating = null;
+                this.question = null;
+                this.errors = [];
+            } else {
+                if(!this.name) this.errors.push("Требуется имя.");
+                if(!this.review) this.errors.push("Требуется отзыв.");
+                if(!this.rating) this.errors.push("Требуется оценка.");
+                if(!this.question) this.errors.push("Требуется рекомендация.");
+            }
+        }
+    }
+})
+
 
 let app = new Vue ({
     el: '#app',
